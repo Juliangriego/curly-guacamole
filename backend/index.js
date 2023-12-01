@@ -46,6 +46,22 @@ app.post("/ingresoDetalleOC", (req, res) => {
   });
 });
 
+app.post("/enviarPreciosProveedor", (req, res) => {
+  const { detalle, proveedor,nombreProveedor, precio } = req.body;
+  const qInsertPrecioProveedor = 'INSERT INTO tb_precios_proveedor (detalle_id, proveedor, nombreProveedor, precio) VALUES (?, ?, ?, ?)';
+  console.log(detalle)
+  
+  db.query(qInsertPrecioProveedor, [detalle.id_compras_detalle, proveedor,nombreProveedor, precio], (err, results) => {
+    if (err) {
+      console.error('Error al insertar precio del proveedor:', err);
+      res.status(500).send('Error al procesar la solicitud');
+    } else {
+      // Éxito al ingresar el precio del proveedor
+      res.status(200).send('Precio del proveedor ingresado correctamente');
+    }
+  });
+});
+
 // Métodos Get
 
 app.get("/obtenerDetalles", (req, res) => {
