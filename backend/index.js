@@ -62,6 +62,22 @@ app.post("/enviarPreciosProveedor", (req, res) => {
   });
 });
 
+app.post("/detalleResuelto", (req, res) => {
+  const { detalle, proveedor,nombreProveedor, precio } = req.body;
+  const qInsertPrecioProveedor = ' UPDATE tb_compras_detalle SET resuelto=? WHERE id_compras_detalle=?';
+  console.log(detalle)
+  
+  db.query(qInsertPrecioProveedor, ['1', detalle.id_compras_detalle], (err, results) => {
+    if (err) {
+      console.error('Error al insertar precio del proveedor:', err);
+      res.status(500).send('Error al procesar la solicitud');
+    } else {
+      // Éxito al ingresar el precio del proveedor
+      res.status(200).send('Precio del proveedor ingresado correctamente');
+    }
+  });
+});
+
 // Métodos Get
 
 app.get("/obtenerDetalles", (req, res) => {
@@ -80,6 +96,20 @@ app.get("/obtenerDetalles", (req, res) => {
 
 app.get("/enviarDetallesOC/sinResolver", (req, res) => {
   const qSelect = 'SELECT * FROM tb_compras_detalle WHERE resuelto = 0'; // Consulta para seleccionar todos los detalles sin resolver
+
+  db.query(qSelect, (err, result) => {
+    if (err) {
+      console.error(err);
+      res.status(500).send("Error al obtener detalles");
+    } else {
+      // Enviar los detalles sin resolver como respuesta
+      res.status(200).json(result);
+    }
+  });
+});
+
+app.get("/enviarDetallesOC/resueltos", (req, res) => {
+  const qSelect = 'SELECT * FROM tb_precios_proveedor WHERE autorizado = 0'; // Consulta para seleccionar todos los detalles sin resolver
 
   db.query(qSelect, (err, result) => {
     if (err) {

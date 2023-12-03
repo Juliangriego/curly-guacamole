@@ -12,7 +12,7 @@ function Componente() {
 
 
   function obtenerDetallesSinResolver() {
-    Axios.get(`http://127.0.0.1:3131/enviarDetallesOC/sinResolver`)
+    Axios.get(`http://127.0.0.1:3131/enviarDetallesOC/resueltos`)
       .then(response => {
         setListaDetalle(response.data);
       })

@@ -11,6 +11,8 @@ import {
 import App from './App';
 import FormularioOC from './Rutas/Formulario';
 import ModuloCompras from './Rutas/ModuloCompras';
+import AutorizacionCompras from './Rutas/AutorizacionCompras';
+
 
 
 const router = createBrowserRouter([
@@ -21,6 +23,10 @@ const router = createBrowserRouter([
   {
     path: "/ModuloCompras",
     element: <ModuloCompras />,
+  },
+  {
+    path: "/AutorizacionCompras",
+    element: <AutorizacionCompras />,
   },
 ]);
 
