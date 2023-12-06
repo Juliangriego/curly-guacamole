@@ -12,10 +12,15 @@ import App from './App';
 import FormularioOC from './Rutas/Formulario';
 import ModuloCompras from './Rutas/ModuloCompras';
 import AutorizacionCompras from './Rutas/AutorizacionCompras';
+import Inicio from './Rutas/Inicio';
 
 
 
 const router = createBrowserRouter([
+  {
+    path: "/",
+    element: <Inicio />,
+  },
   {
     path: "/FormularioOC",
     element: <FormularioOC />,

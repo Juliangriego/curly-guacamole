@@ -7,11 +7,11 @@ function Componente() {
   const [solicitanteInput, setSolicitanteInput] = useState('');
 
   useEffect(() => {
-    obtenerDetallesSinResolver();
+    obtenerDetallesresueltos();
   }, []);
 
 
-  function obtenerDetallesSinResolver() {
+  function obtenerDetallesresueltos() {
     Axios.get(`http://127.0.0.1:3131/enviarDetallesOC/resueltos`)
       .then(response => {
         setListaDetalle(response.data);
@@ -65,7 +65,7 @@ function Componente() {
   }
 
   function buscarPorSolicitante() {
-    Axios.get(`http://127.0.0.1:3131/enviarDetallesOC/sinResolver/${solicitanteInput}`)
+    Axios.get(`http://127.0.0.1:3131/enviarDetallesOC/resueltos/${solicitanteInput}`)
       .then(response => {
         setListaDetalle(response.data);
         setDetalleSeleccionado(null); // Limpiar el detalle seleccionado al buscar por solicitante
@@ -87,6 +87,12 @@ function Componente() {
     .catch(error => {
       console.error('Error al enviar la información de precios del proveedor:', error);
     });
+  }
+
+  function fechaFormateada(detalle){
+    const fecha = detalle.split('T')[0];
+    const [anio, mes, dia] = fecha.split('-');
+    return `${dia}-${mes}-${anio}`;
   }
 
   function mostrarDetalles() {
@@ -188,21 +194,26 @@ function Componente() {
             <table class="table">
               <thead>
                 <tr>
-                  <th scope="col">Fecha</th>
-                  <th scope="col">Solicitante</th>
+                  <th scope="col">Detalle N°</th>
+                  <th scope="col">Fecha Solicitante</th>
+                  <th scope="col">Fecha Cotizado</th>
+                  <th scope="col">Fecha Co</th>
                   <th scope="col">Artículo</th>
-                  <th scope="col">Cantidad</th>
-                  <th scope="col">Observación</th>
+                  {/*<th scope="col">Cantidad</th>
+                  <th scope="col">Observación</th>*/}
                 </tr>
               </thead>
               {listaDetalle.map((detalle, index) => (
                 <tbody>
                   <tr key={index} onClick={() => mostrarDetalle(detalle)}>
-                    <th scope="row">{new Date(detalle.fecha).toLocaleDateString()} </th>
-                    <td>{detalle.nombre_solicitante}</td> 
+                    <th scope="row">{detalle.detalle_id} </th>
+                    
+                    <td>{fechaFormateada(detalle.fecha_solicitud)}</td>
+                    <td>{fechaFormateada(detalle.fecha_cotizacion)}</td> 
+                    <td>{detalle.nombreProveedor}</td> 
                     <td>{detalle.articulo}</td> 
-                    <td>{detalle.cantidad}</td> 
-                    <td>{detalle.observacion}</td>
+                    {/*<td>{detalle.cantidad}</td> 
+                    <td>{detalle.observacion}</td>*/}
                   </tr>
                 </tbody>
               ))}

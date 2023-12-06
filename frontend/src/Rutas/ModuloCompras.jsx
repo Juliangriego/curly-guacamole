@@ -93,7 +93,7 @@ function Componente() {
     if (detalleSeleccionado) {
       return (
         <div>
-          {/* ... (código existente) */}
+          
           <div>
             <p>Precio proveedor 1:</p>
             <input
