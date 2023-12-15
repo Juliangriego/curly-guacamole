@@ -12,7 +12,7 @@ function Componente() {
 
 
   function obtenerDetallesSinResolver() {
-    Axios.get(`http://127.0.0.1:3131/enviarDetallesOC/sinResolver`)
+    Axios.get(`http://127.0.0.1:3131/Compras/sinResolver`)
       .then(response => {
         setListaDetalle(response.data);
       })
@@ -51,7 +51,7 @@ function Componente() {
       precio,
     };
   
-    Axios.post('http://127.0.0.1:3131/enviarPreciosProveedor', data)
+    Axios.post('http://127.0.0.1:3131/Compras/enviarPreciosProveedor', data)
     .then(response => {
       console.log('Información de precios del proveedor enviada al backend:', response.data);
     })
@@ -65,7 +65,7 @@ function Componente() {
   }
 
   function buscarPorSolicitante() {
-    Axios.get(`http://127.0.0.1:3131/enviarDetallesOC/sinResolver/${solicitanteInput}`)
+    Axios.get(`http://127.0.0.1:3131/Compras/sinResolver/${solicitanteInput}`)
       .then(response => {
         setListaDetalle(response.data);
         setDetalleSeleccionado(null); // Limpiar el detalle seleccionado al buscar por solicitante
@@ -80,7 +80,7 @@ function Componente() {
       detalle
     };
 
-    Axios.post('http://127.0.0.1:3131/detalleResuelto', data)
+    Axios.post('http://127.0.0.1:3131/Compras/detalleResuelto', data)
     .then(response => {
       console.log('Información de precios del proveedor enviada al backend:', response.data);
     })
@@ -93,9 +93,15 @@ function Componente() {
     if (detalleSeleccionado) {
       return (
         <div>
-          
           <div>
-            <p>Precio proveedor 1:</p>
+            <ul>
+              <li>Articulo: {detalleSeleccionado.articulo}</li>
+              <li>Cantidad: {detalleSeleccionado.cantidad}</li>
+              <li>Observación: {detalleSeleccionado.observacion}</li>
+            </ul>
+          </div>
+          <div>
+            <p>Nombre y precio proveedor 1:</p>
             <input
                 type="text"
                 value={preciosProveedores.proveedor1}
@@ -119,7 +125,7 @@ function Componente() {
                 Enviar Precio Proveedor 1
               </button>
 
-            <p>Precio proveedor 2:</p>
+            <p>Nombre y precio proveedor 2:</p>
             <input
                 type="text"
                 value={preciosProveedores.proveedor2}
@@ -143,7 +149,7 @@ function Componente() {
                 Enviar Precio Proveedor 2
               </button>
 
-            <p>Precio proveedor 3:</p>
+            <p>Nombre y precio proveedor 3:</p>
             <input
                 type="text"
                 value={preciosProveedores.proveedor3}
@@ -199,13 +205,15 @@ function Componente() {
                 <tbody>
                   <tr key={index} onClick={() => mostrarDetalle(detalle)}>
                     <th scope="row">{new Date(detalle.fecha_solicitud).toLocaleDateString()} </th>
-                    <td>{detalle.nombre_solicitante}</td> 
+                    <td>{detalle.solicitante}</td> 
                     <td>{detalle.articulo}</td> 
                     <td>{detalle.cantidad}</td> 
                     <td>{detalle.observacion}</td>
+                    
                   </tr>
                 </tbody>
               ))}
+
             </table>
             <p>Selecciona un detalle o ingresa un solicitante para buscar.</p> 
           </div>
@@ -222,7 +230,7 @@ function Componente() {
               <ul>
                 {listaDetalle.map((detalle, index) => (
                   <li key={index} onClick={() => mostrarDetalle(detalle)}>
-                    Fecha: {new Date(detalle.fecha_solicitud).toLocaleDateString()} - Solicitante: {detalle.nombre_solicitante}
+                    Fecha: {new Date(detalle.fecha_solicitud).toLocaleDateString()} - Solicitante: {detalle.solicitante}
                   </li>
                 ))}
               </ul>
