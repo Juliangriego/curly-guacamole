@@ -198,7 +198,7 @@ function Componente() {
               {listaDetalle.map((detalle, index) => (
                 <tbody>
                   <tr key={index} onClick={() => mostrarDetalle(detalle)}>
-                    <th scope="row">{new Date(detalle.fecha).toLocaleDateString()} </th>
+                    <th scope="row">{new Date(detalle.fecha_solicitud).toLocaleDateString()} </th>
                     <td>{detalle.nombre_solicitante}</td> 
                     <td>{detalle.articulo}</td> 
                     <td>{detalle.cantidad}</td> 
@@ -222,7 +222,7 @@ function Componente() {
               <ul>
                 {listaDetalle.map((detalle, index) => (
                   <li key={index} onClick={() => mostrarDetalle(detalle)}>
-                    Fecha: {new Date(detalle.fecha).toLocaleDateString()} - Solicitante: {detalle.nombre_solicitante}
+                    Fecha: {new Date(detalle.fecha_solicitud).toLocaleDateString()} - Solicitante: {detalle.nombre_solicitante}
                   </li>
                 ))}
               </ul>

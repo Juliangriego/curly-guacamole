@@ -8,11 +8,13 @@ import {
 } from "react-router-dom";
 
 //modulos
-import App from './App';
+//import App from './App';
 import FormularioOC from './Rutas/Formulario';
-import ModuloCompras from './Rutas/ModuloCompras';
+import ComprasPage from './Rutas/ComprasPage';
 import AutorizacionCompras from './Rutas/AutorizacionCompras';
 import Inicio from './Rutas/Inicio';
+import ModuloCompras from './Rutas/ModuloCompras';
+
 
 
 
@@ -28,6 +30,10 @@ const router = createBrowserRouter([
   {
     path: "/ModuloCompras",
     element: <ModuloCompras />,
+  },
+  {
+    path: "/ComprasPage",
+    element: <ComprasPage />,
   },
   {
     path: "/AutorizacionCompras",

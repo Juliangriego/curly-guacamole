@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+/*import React, { useState, useEffect } from 'react';
 import Axios from 'axios';
 
 function Componente() {
@@ -95,11 +95,23 @@ function Componente() {
     return `${dia}-${mes}-${anio}`;
   }
 
+
+  const agregarDetalle = () => {
+    const detalleActual = { solicitante, articulo, cantidad, observaciones };
+    setListaDetalle([...listaDetalle, detalleActual]);
+    // Limpiar campos de entrada después de agregar el detalle
+    setSolicitante('');
+    setArticulo('');
+    setCantidad('');
+    setObservaciones('');
+  };
+
+
   function mostrarDetalles() {
     if (detalleSeleccionado) {
       return (
         <div>
-          {/* ... (código existente) */}
+          
           <div>
             <p>Precio proveedor 1:</p>
             <input
@@ -199,8 +211,13 @@ function Componente() {
                   <th scope="col">Fecha Cotizado</th>
                   <th scope="col">Fecha Co</th>
                   <th scope="col">Artículo</th>
-                  {/*<th scope="col">Cantidad</th>
-                  <th scope="col">Observación</th>*/}
+                  <th scope="col">Proveedor 1</th>
+                  <th scope="col">Pr Prov 1</th>
+                  <th scope="col">Proveedor 2</th>
+                  <th scope="col">Pr Prov 2</th>
+                  <th scope="col">Proveedor 3</th>
+                  <th scope="col">Pr Prov 3</th>
+                  <th scope="col">Observación</th>}
                 </tr>
               </thead>
               {listaDetalle.map((detalle, index) => (
@@ -212,8 +229,8 @@ function Componente() {
                     <td>{fechaFormateada(detalle.fecha_cotizacion)}</td> 
                     <td>{detalle.nombreProveedor}</td> 
                     <td>{detalle.articulo}</td> 
-                    {/*<td>{detalle.cantidad}</td> 
-                    <td>{detalle.observacion}</td>*/}
+                    <td></td>
+                   
                   </tr>
                 </tbody>
               ))}
@@ -256,4 +273,77 @@ function Componente() {
   );
 }
 
-export default Componente;
+export default Componente;*/
+
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
+
+const AutorizacionCompras = () => {
+  const [detallesParaAutorizar, setDetallesParaAutorizar] = useState([]);
+
+  useEffect(() => {
+    // Realizar la solicitud GET al backend para obtener detalles para autorizar
+    axios.get('/api/detallesParaAutorizar')
+      .then((response) => {
+        setDetallesParaAutorizar(response.data);
+      })
+      .catch((error) => {
+        console.error('Error al obtener detalles para autorizar:', error);
+      });
+  }, []);
+
+  const handleRadioChange = (detalleIndex, proveedorIndex) => {
+    const nuevosDetalles = [...detallesParaAutorizar];
+    nuevosDetalles[detalleIndex].proveedores.forEach((proveedor, index) => {
+      proveedor.seleccionado = index === proveedorIndex;
+    });
+    setDetallesParaAutorizar(nuevosDetalles);
+  };
+
+  const enviarAutorizacion = (detalleIndex) => {
+    const detalle = detallesParaAutorizar[detalleIndex];
+    const proveedorSeleccionado = detalle.proveedores.find((proveedor) => proveedor.seleccionado);
+    
+    // Realizar la solicitud POST al backend para actualizar la fecha de autorización
+    axios.post('/api/autorizarCompra', {
+      id_detalle: detalle.id_detalle,
+      proveedor_seleccionado: proveedorSeleccionado,
+    })
+    .then((response) => {
+      console.log('Compra autorizada:', response.data);
+    })
+    .catch((error) => {
+      console.error('Error al autorizar la compra:', error);
+    });
+  };
+
+  return (
+    <div>
+      {detallesParaAutorizar.map((detalle, detalleIndex) => (
+        <div key={detalleIndex}>
+          <p>Fecha Solicitud: {detalle.fecha_solicitud}</p>
+          <p>Solicitante: {detalle.solicitante}</p>
+          <p>Artículo: {detalle.articulo}</p>
+          <p>Cantidad: {detalle.cantidad}</p>
+          <p>Observación: {detalle.observacion}</p>
+          {detalle.proveedores.map((proveedor, proveedorIndex) => (
+            <div key={proveedorIndex}>
+              <input
+                type="radio"
+                name={`proveedor_${detalleIndex}`}
+                checked={proveedor.seleccionado}
+                onChange={() => handleRadioChange(detalleIndex, proveedorIndex)}
+              />
+              <label>
+                {proveedor.nombre} - ${proveedor.precio}
+              </label>
+            </div>
+          ))}
+          <button onClick={() => enviarAutorizacion(detalleIndex)}>Autorizar Compra</button>
+        </div>
+      ))}
+    </div>
+  );
+};
+
+export default AutorizacionCompras;
