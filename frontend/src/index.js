@@ -14,6 +14,7 @@ import ComprasPage from './Rutas/ComprasPage';
 import AutorizacionCompras from './Rutas/AutorizacionCompras';
 import Inicio from './Rutas/Inicio';
 import ModuloCompras from './Rutas/ModuloCompras';
+import Header from './components/header/Header.tsx';
 
 
 
@@ -44,6 +45,7 @@ const router = createBrowserRouter([
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
+    <Header/>
     <RouterProvider router={router} />
     
   </React.StrictMode>

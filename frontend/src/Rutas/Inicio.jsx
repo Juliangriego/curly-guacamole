@@ -1,12 +1,10 @@
-import React, { useState, useEffect } from 'react';
-import Axios from 'axios';
+import React from 'react';
 
-function Componente() {
+function HomePage() {
 return (
     <div>
-        
     </div>
 )
 }
 
-export default Componente;
+export default HomePage;
