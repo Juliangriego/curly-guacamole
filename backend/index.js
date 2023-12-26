@@ -1,6 +1,6 @@
 const express = require("express");
 const app = express();
-const mysql = require("mysql");
+const mysql = require("mysql2");
 const cors = require("cors");
 app.use(cors());
 app.use(express.json());
@@ -18,7 +18,6 @@ app.listen(3131, () => {
 });
 
 app.post("/Formulario/crearDetalle", (req, res) => {
-  console.log(req.body);
   const fechaActual = new Date().toISOString().slice(0, 19).replace('T', ' ');
   const solicitante = req.body[0].solicitante;
   const values = req.body.map((x) => [solicitante, x.articulo, x.cantidad, x.observaciones, fechaActual]);
@@ -113,29 +112,42 @@ app.post("/Compras/enviarPreciosProveedor", (req, res) => {
 });
 
 app.get("/Autorizaciones/Resueltas", (req, res) => {
-  const qSelect = 'SELECT id_detalle from tb_detalles WHERE fecha_aprobacion IS NULL AND fecha_cotizacion IS NOT NULL;';
-  db.query(qSelect, (err, result) => {
-    result.map((pepe, indice) => console.log(pepe.id_detalle));
+  const qSelectDetalles = 'SELECT id_detalle, articulo, cantidad, observacion FROM tb_detalles WHERE fecha_aprobacion IS NULL AND fecha_cotizacion IS NOT NULL;';
+  db.query(qSelectDetalles, (err, detallesResult) => {
     if (err) {
       console.error(err);
       res.status(500).send("Error al obtener detalles");
     } else {
-      const qSelect1 = ' SELECT * FROM tb_proveedores WHERE id_detalle = ?;'
-      db.query(qSelect, [nombreSolicitante], (err, result) => {
-        if (err) {
-          console.error(err);
-          res.status(500).send("Error al obtener detalles");
-        } else {
-          res.status(200).json(result);
-        }
+      const detallesConProveedores = [];
+      const promises = detallesResult.map((detalle) => {
+        return new Promise((resolve, reject) => {
+          const qSelectProveedores = 'SELECT nombre_proveedor, precio_proveedor FROM tb_proveedores WHERE id_detalle = ?;';
+          db.query(qSelectProveedores, [detalle.id_detalle], (err, proveedoresResult) => {
+            if (err) {
+              console.error(err);
+              reject("Error al obtener proveedores");
+            } else {
+              detallesConProveedores.push({ ...detalle, proveedores: proveedoresResult });
+              resolve();
+            }
+          });
+        });
       });
-      res.status(200).json(result);
+
+      Promise.all(promises)
+        .then(() => {
+          res.status(200).json(detallesConProveedores);
+        })
+        .catch((error) => {
+          console.error(error);
+          res.status(500).send("Error al obtener detalles con proveedores");
+        });
     }
   });
 });
 
+
 app.post("/Autorizaciones/enviarSeleccion", (req, res) => {
-  console.log(req);
   db.query(qUpdateDetalle, [fechaActual, id], (err, results) => {
     if (err) {
       console.error('Error al actualizar detalle:', err);
@@ -145,6 +157,24 @@ app.post("/Autorizaciones/enviarSeleccion", (req, res) => {
     }
   });
 });
+
+app.post("/Autorizaciones/enviarPreciosProveedor", (req, res) => {
+  const fechaAprobado = new Date().toISOString().split('T')[0]; // Obtiene solo la fecha sin hora
+  const detalleId = req.body.detalle;
+  const nombreProveedor = req.body.nombreProveedor;
+  const precio = req.body.precio;
+  const qInsertPrecioProveedor = 'UPDATE tb_detalles SET fecha_aprobacion = ?, proveedor_aprobado = ?, precio = ? WHERE id_detalle = ?';
+  db.query(qInsertPrecioProveedor, [fechaAprobado, nombreProveedor, precio, detalleId], (err, result) => {
+    if (err) {
+      console.error(err);
+      res.status(500).send("Error al insertar información de proveedor aprobado");
+    } else {
+      console.log(fechaAprobado, nombreProveedor, precio, detalleId)
+      res.status(200).send('Información de proveedor aprobado actualizada correctamente');
+    }
+  });
+});
+
 
 app.get("/Autorizaciones/sinResolver/:id", (req, res) => {
   const nombreSolicitante = req.params.id;

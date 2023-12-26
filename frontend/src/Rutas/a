@@ -1,1 +1,11 @@
-{id_detalle, articulo, cantidad, observacion, fecha_solicitud, fecha_cotizacion, fecha_aprobacion, proveedor_aprobado, precio, solicitante}
+{id_detalle, articulo, cantidad, observacion, fecha_solicitud, fecha_cotizacion, fecha_aprobacion, proveedor_aprobado, precio,  }
+  const qSelect = 'SELECT tb_detalles.solicitante, tb_detalles.articulo, tb_detalles.cantidad, tb_detalles.observacion, tb_proveedores.nombre_proveedor, tb_proveedores.precio_proveedor FROM tb_detalles INNER JOIN tb_proveedores ON tb_detalles.id_detalle = tb_proveedores.id_detalle WHERE tb_detalles.fecha_aprobacion IS NULL AND tb_detalles.fecha_cotizacion IS NOT NULL;';
+
+
+
+  SELECT *
+  FROM tb_detalles
+  INNER JOIN tb_proveedores ON tb_detalles.id_detalle=tb_proveedores.id_detalle
+  WHERE tb_detalles.fecha_aprobacion IS NULL AND tb_detalles.fecha_cotizacion IS NOT NULL; 
+
+  SELECT * FROM tb_proveedores WHERE id_detalle = ?
