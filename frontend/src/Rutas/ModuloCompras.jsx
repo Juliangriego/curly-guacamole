@@ -104,14 +104,15 @@ function Componente() {
             <p>Nombre y precio proveedor 1:</p>
             <input
                 type="text"
-                value={preciosProveedores.proveedor1}
-                onChange={(e) => handlePrecioProveedorChange(e, 'proveedor1')}
-              />
-              <input
-                type="text"
                 value={nombresProveedores.proveedor1}
                 onChange={(e) => setNombresProveedores({ ...nombresProveedores, proveedor1: e.target.value })}
               />
+            <input
+                type="text"
+                value={preciosProveedores.proveedor1}
+                onChange={(e) => handlePrecioProveedorChange(e, 'proveedor1')}
+              />
+              
               <button
                 onClick={() =>
                   enviarPreciosProveedor(
@@ -128,14 +129,15 @@ function Componente() {
             <p>Nombre y precio proveedor 2:</p>
             <input
                 type="text"
-                value={preciosProveedores.proveedor2}
-                onChange={(e) => handlePrecioProveedorChange(e, 'proveedor2')}
-              />
-              <input
-                type="text"
                 value={nombresProveedores.proveedor2}
                 onChange={(e) => setNombresProveedores({ ...nombresProveedores, proveedor2: e.target.value })}
               />
+            <input
+                type="text"
+                value={preciosProveedores.proveedor2}
+                onChange={(e) => handlePrecioProveedorChange(e, 'proveedor2')}
+              />
+              
               <button
                 onClick={() =>
                   enviarPreciosProveedor(
@@ -152,14 +154,15 @@ function Componente() {
             <p>Nombre y precio proveedor 3:</p>
             <input
                 type="text"
-                value={preciosProveedores.proveedor3}
-                onChange={(e) => handlePrecioProveedorChange(e, 'proveedor3')}
-              />
-              <input
-                type="text"
                 value={nombresProveedores.proveedor3}
                 onChange={(e) => setNombresProveedores({ ...nombresProveedores, proveedor3: e.target.value })}
               />
+            <input
+                type="text"
+                value={preciosProveedores.proveedor3}
+                onChange={(e) => handlePrecioProveedorChange(e, 'proveedor3')}
+              />
+              
               <button
                 onClick={() =>
                   enviarPreciosProveedor(
@@ -240,15 +243,6 @@ function Componente() {
             </div>
           </div>
       </div>
-      <label className="form-label">Solicitante que desea ver</label>
-      <input
-        type="text"
-        value={solicitanteInput}
-        onChange={(e) => setSolicitanteInput(e.target.value)}
-      />
-      <button type="button" onClick={buscarPorSolicitante}>
-        Buscar por Solicitante
-      </button>
     </div>
   );
 }
