@@ -15,7 +15,7 @@ import AutorizacionCompras from './Rutas/AutorizacionCompras';
 import Inicio from './Rutas/Inicio';
 import ModuloCompras from './Rutas/ModuloCompras';
 import Header from './components/header/Header.tsx';
-
+import Consultas from './Rutas/Consultas.jsx'
 
 
 
@@ -39,6 +39,10 @@ const router = createBrowserRouter([
   {
     path: "/AutorizacionCompras",
     element: <AutorizacionCompras />,
+  },
+  {
+    path: "/Consultas",
+    element: <Consultas />,
   },
 ]);
 

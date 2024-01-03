@@ -10,12 +10,10 @@ const db = mysql.createPool({
   user: "chu",
   password: "l0.DqgeWXkHHQQ5g",
   database: "db_empresa",
-  //waitForConnections: true,connectionLimit: 10,queueLimit: 0
+  waitForConnections: true,connectionLimit: 10,queueLimit: 0
 });
 
-app.listen(3131, () => {
-  console.log("Ejecutando backend en puerto 3131");
-});
+app.listen(3131, () => {console.log("Ejecutando backend en puerto 3131");});
 
 app.post("/Formulario/crearDetalle", (req, res) => {
   const fechaActual = new Date().toISOString().slice(0, 19).replace('T', ' ');
@@ -58,35 +56,8 @@ app.get("/Compras/sinResolver/:id", (req, res) => {
   });
 });
 
-app.post("/Compras/resolver", (req, res) => {
-  const fechaCotizado = new Date().toISOString().slice(0, 19).replace('T', ' ');
-  const detalleId = req.body.detalle.id_detalle;
-  const proveedores = req.body.proveedores;
-  const qInsertPrecioProveedor = 'INSERT INTO tb_detalles (detalle_id, fecha_cotizado) VALUES (?, ?)';
-  db.query(qInsertPrecioProveedor, [detalleId, fechaCotizado], (err, result) => {
-    if (err) {
-      console.error(err);
-      res.status(500).send("Error al insertar precio proveedor");
-    } else {
-      for (const proveedor of proveedores) {
-        const { nombreProveedor, precio } = proveedor;
-        const qInsertProveedorPrecio = "INSERT INTO proveedor_precio (id_detalle, proveedor, precio) VALUES (?, ?, ?)";
-        db.query(qInsertProveedorPrecio, [detalleId, nombreProveedor, precio], (err, result) => {
-          if (err) {
-            console.error(err);
-            res.status(500).send("Error al insertar proveedor precio");
-          }
-        });
-      }
-      res.status(200).send('Precios proveedores ingresados correctamente');
-    }
-  });
-});
-
 //Módulo Autorizaciones
 app.post("/Compras/enviarPreciosProveedor", (req, res) => {
-  console.log(req.body);
-
   const fechaCotizado = new Date().toISOString().split('T')[0]; // Obtiene solo la fecha sin hora
   const detalleId = req.body.detalle.id_detalle;
   const nombreProveedor = req.body.nombreProveedor;
@@ -146,18 +117,6 @@ app.get("/Autorizaciones/Resueltas", (req, res) => {
   });
 });
 
-
-app.post("/Autorizaciones/enviarSeleccion", (req, res) => {
-  db.query(qUpdateDetalle, [fechaActual, id], (err, results) => {
-    if (err) {
-      console.error('Error al actualizar detalle:', err);
-      res.status(500).send('Error al procesar la solicitud');
-    } else {
-      res.status(200).send('Detalle actualizado correctamente');
-    }
-  });
-});
-
 app.post("/Autorizaciones/enviarPreciosProveedor", (req, res) => {
   const fechaAprobado = new Date().toISOString().split('T')[0]; // Obtiene solo la fecha sin hora
   const detalleId = req.body.detalle;
@@ -171,20 +130,6 @@ app.post("/Autorizaciones/enviarPreciosProveedor", (req, res) => {
     } else {
       console.log(fechaAprobado, nombreProveedor, precio, detalleId)
       res.status(200).send('Información de proveedor aprobado actualizada correctamente');
-    }
-  });
-});
-
-
-app.get("/Autorizaciones/sinResolver/:id", (req, res) => {
-  const nombreSolicitante = req.params.id;
-  const qSelect = 'SELECT * FROM tb_detalles WHERE fecha_cotizacion IS NULL AND solicitante = ?'; // Consulta para seleccionar los detalles por nombre de solicitante sin resolver
-  db.query(qSelect, [nombreSolicitante], (err, result) => {
-    if (err) {
-      console.error(err);
-      res.status(500).send("Error al obtener detalles");
-    } else {
-      res.status(200).json(result);
     }
   });
 });
@@ -203,11 +148,22 @@ app.post("/Compras/detalleResuelto", (req, res) => {
   });
 });
 
+app.post("/Consultas/Consulta", (req, res) => {
+  const fechaActual = new Date().toISOString().slice(0, 19).replace('T', ' ');
+  const qUpdateDetalle = 'DESCRIBE tb_detalles';
+  const id = req.body.id_detalle;
+  db.query(qUpdateDetalle, [fechaActual, id], (err, results) => {
+    if (err) {
+      console.error('Error al actualizar detalle:', err);
+      res.status(500).send('Error al procesar la solicitud');
+    } else {
+      res.status(200).send('Detalle actualizado correctamente');
+    }
+  });
+});
 
-
-
-app.get("/enviarDetallesOC/resueltos", (req, res) => {
-  const qSelect = 'SELECT tb_precios_proveedor.detalle_id, tb_precios_proveedor.nombreProveedor, tb_precios_proveedor.precio, tb_precios_proveedor.fecha_solicitud, tb_precios_proveedor.fecha_cotizado, tb_detalles.solicitante, tb_detalles.articulo FROM tb_precios_proveedor JOIN tb_detalles ON tb_precios_proveedor.detalle_id = tb_detalles.id_detalle WHERE tb_precios_proveedor.fecha_cotizado IS NOT NULL';
+app.get("/Consultas/Respuesta", (req, res) => {
+  const qSelect = 'SELECT * FROM tb_detalles'; // Consulta para seleccionar los detalles por nombre de solicitante sin resolver
   db.query(qSelect, (err, result) => {
     if (err) {
       console.error(err);

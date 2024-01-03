@@ -8,6 +8,7 @@ const Header = () => {
         <a href='/FormularioOC' className='header-button'><span >Formulario OC</span></a>
         <a href='/ModuloCompras' className='header-button'><span >Modulo de compras</span></a>
         <a href='/AutorizacionCompras' className='header-button'><span >Autorización de compras</span></a>
+        <a href='/Consultas' className='header-button'><span >Consultas personalizadas</span></a>
     </div>  
 )}
 

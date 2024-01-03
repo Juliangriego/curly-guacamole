@@ -9,3 +9,13 @@
   WHERE tb_detalles.fecha_aprobacion IS NULL AND tb_detalles.fecha_cotizacion IS NOT NULL; 
 
   SELECT * FROM tb_proveedores WHERE id_detalle = ?
+Get
+Autorizaciones/Resueltas
+Compras/sinResolver
+Compras/sinResolver/${solicitanteInput}
+
+Post
+Autorizaciones/enviarPreciosProveedor
+Compras/enviarPreciosProveedor
+Compras/detalleResuelto
+Formulario/crearDetalle
